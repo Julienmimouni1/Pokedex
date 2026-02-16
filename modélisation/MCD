@@ -1,0 +1,8 @@
+TYPE: code_type, name, color
+APPARTIENT, 1N POKEMON, 1N TYPE
+POKEMON: code_pokemon, name, hp, atk, def, atk_spe, def_spe, speed
+
+COMPREND, 1N TEAM, 0N POKEMON
+TEAM: code_team, name, description
+
+https://www.mocodo.net/?mcd=eNo9jr0OAiEQhHueYh-AQls7ohTGwJELjdWFwBovJyy5o_Ht5X6wmcxOMt-OfRp5AU8Bh_LNyCG5WNXTh2YmjBG9vUttOZw1mO4hVac3b2uPHcHRzzRhpNQQ78zBlYlDwNfmhmXl12s3VTAwdu2U6aW-7VQpFIfT_xVbgzYPXWzsgIufx1xGSj9n5zuo
