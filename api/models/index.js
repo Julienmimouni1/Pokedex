@@ -1,6 +1,6 @@
-import Pokemon from "./pokemon.model.js"
-import Type from "./type.model.js"
-import Team from "./team.model.js"
+import { Pokemon } from "./pokemon.model.js"
+import { Type } from "./type.model.js"
+import { Team } from "./team.model.js"
 import { sequelize } from "./sequelize.client.js";
 
 

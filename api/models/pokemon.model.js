@@ -1,7 +1,7 @@
 import { DataTypes, Model } from "sequelize";
-import {sequelize}from "../database.js";
+import {sequelize}from "./sequelize.client.js";
 
-class Pokemon extends Model {}
+export class Pokemon extends Model {}
 
 Pokemon.init({
   name : {
@@ -29,11 +29,7 @@ Pokemon.init({
     type : DataTypes.INTEGER, // On pourait mettre max 100 
     allowNull : false, 
   },
-  def_spe: { 
-    type : DataTypes.INTEGER, // On pourait mettre max 100 
-    allowNull : false, 
-  },
-  
+  }, {
     sequelize,  
     tableName : "pokemon"
   }

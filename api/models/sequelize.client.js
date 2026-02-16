@@ -1,7 +1,7 @@
 import "dotenv/config";
-import { sequelize } from "sequelize";
+import { Sequelize } from "sequelize";
 
-export const sequelize = new sequelize(process.env.PG_URL, {
+export const sequelize = new Sequelize(process.env.PG_URL, {
   define: {
     createdAt: "created_at",
     updatedAt: "updated_at"

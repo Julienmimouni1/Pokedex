@@ -1,7 +1,7 @@
 import { DataTypes, Model } from "sequelize";
-import {sequelize}from "../database.js";
+import {sequelize} from "./sequelize.client.js";
 
-class Type extends Model {}
+export class Type extends Model {}
 
 Type.init({
   name : {
@@ -11,7 +11,7 @@ Type.init({
   color : {
     type : DataTypes.STRING(7)
   },
-  
+  }, {
     sequelize,  
     tableName : "type"
   }

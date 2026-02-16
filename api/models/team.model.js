@@ -1,7 +1,7 @@
 import { DataTypes, Model } from "sequelize";
-import {sequelize}from "../database.js";
+import {sequelize} from "./sequelize.client.js";
 
-class Team extends Model {}
+export class Team extends Model {}
 
 Team.init({
   name : {
@@ -11,7 +11,7 @@ Team.init({
   description : {
     type : DataTypes.TEXT
   },
-  
+  }, {
     sequelize,  
     tableName : "team"
   }
