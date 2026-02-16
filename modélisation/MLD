@@ -1,0 +1,43 @@
+pokemon (
+    id, PRIMARY KEY 
+    name,
+    hp,
+    def,
+    atk_spe,
+    def_sep,
+    speed, 
+    #created_at, 
+    #updated_at
+)
+
+type (
+    id, PRIMARY KEY 
+    name, 
+    color, 
+    #created_at, 
+    #updated_at,
+)
+
+team(
+    id, PRIMARY KEY 
+    name, 
+    description, 
+    #created_at,
+    #updated_at
+)
+
+pokemon_type(
+    id, PRIMARY KEY 
+    #pokemon_id, FOREIGN KEY 
+    #type_id, FOREIGN KEY 
+    #created_at, 
+    #updated_at,
+)
+
+team_pokemon(
+    id, PRIMARY KEY 
+    #team_id
+    #pokemon_id, FOREIGN KEY 
+    #created_at, 
+    #updated_at
+)
