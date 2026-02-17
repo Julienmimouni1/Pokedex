@@ -8,3 +8,11 @@ Content-Type: application/json
 "name": "La team des Julien",
 "description":"Pour réussir à créer des équipes grâce à une requête POST"
 }
+
+### update team 
+PATCH {{baseUrl}}/team/1
+Content-Type: application/json
+
+{
+"name": "Equipe transformé en équipe de rêve"
+}

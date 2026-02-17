@@ -6,3 +6,4 @@ const pokemons = await Pokemon.findAll({
 res.status(200).json(pokemons)
 }; 
 
+
