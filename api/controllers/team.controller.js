@@ -11,3 +11,12 @@ export async function createTeam(req, res){
     res.status(201).json(teams);
 }
 
+export async function getTeamById(req,res){
+    const team = await Team.findByPk(req.params.id); 
+    if(!team){
+        return res.status(404).json({error : 'Team not found'}); 
+    }
+    res.status(200).json(team);
+    }
+
+    
