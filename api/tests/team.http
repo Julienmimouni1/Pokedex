@@ -16,3 +16,20 @@ Content-Type: application/json
 {
 "name": "Equipe transformé en équipe de rêve"
 }
+
+### Add a pokemon to a team
+POST {{baseUrl}}/team/1/pokemon/25
+Content-Type: application/json
+
+### Add a new team pour tester l'ajout de pokemon 
+POST {{baseUrl}}/team
+Content-Type: application/json
+
+{
+"name": "La team pour tester un ajout de Pokemon",
+"description":"Je vais ajouter Pikachu à cette équipe"
+}
+
+### Add a pokemon to a new team 
+POST {{baseUrl}}/team/5/pokemon/25
+Content-Type: application/json
