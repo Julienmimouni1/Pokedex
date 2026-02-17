@@ -5,11 +5,11 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "test-db": "node database.js", 
-    "db:create" : "node migrations/01.create-tables.js", 
-    "db:seed" : " node migrations/02.seed-tables.js", 
-    "db:reset" : "npm run db:create && npm run db:seed", 
-    "dev" : "nodemon app.js"
+    "test-db": "node database.js",
+    "db:create": "node migrations/01.create-tables.js",
+    "db:seed": " node migrations/02.seed-tables.js",
+    "db:reset": "npm run db:create && npm run db:seed",
+    "dev": "nodemon app.js"
   },
   "keywords": [],
   "author": "",
@@ -18,6 +18,7 @@
   "dependencies": {
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
+    "joi": "^18.0.2",
     "pg": "^8.18.0",
     "sequelize": "^6.37.7"
   }

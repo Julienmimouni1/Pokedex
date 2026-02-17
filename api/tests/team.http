@@ -1,0 +1,10 @@
+@baseUrl = http://localhost:3000
+
+### Add a new team
+POST {{baseUrl}}/team
+Content-Type: application/json
+
+{
+"name": "La team des Julien",
+"description":"Pour réussir à créer des équipes grâce à une requête POST"
+}
