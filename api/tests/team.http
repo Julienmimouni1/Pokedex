@@ -38,3 +38,7 @@ Content-Type: application/json
 ### delete one pokemon from a team ( example pokemon avec  id 25 de la team 5) 
 DELETE  {{baseUrl}}/team/5/pokemon/25
 Content-Type: application/json
+
+### delete a team ( exemple la team 5 )
+DELETE  {{baseUrl}}/team/6
+Content-Type: application/json

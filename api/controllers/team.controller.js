@@ -91,3 +91,15 @@ export async function deletePokemonFromTeam(req, res){
     await team.removePokemon(pokemon);
     res.status(200).json(team);
 }
+
+export async function deleteTeam(req, res){
+    const deletedTeam = await Team.destroy({
+        where : {
+            id : req.params.id 
+        }
+    })
+    if (deletedTeam === 0) {
+        return res.status(404).json({error : 'Team not found'});
+    }
+    res.status(204).send(); 
+}

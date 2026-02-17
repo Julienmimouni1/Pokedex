@@ -1,6 +1,6 @@
 import express from "express"; 
 
-import { getAllTeam, createTeam, getTeamById, updateTeam, addPokemonToTeam, deletePokemonFromTeam} from "../controllers/team.controller.js";
+import { getAllTeam, createTeam, getTeamById, updateTeam, addPokemonToTeam, deletePokemonFromTeam, deleteTeam} from "../controllers/team.controller.js";
 import { validateTeamCreation, validateTeamUpdate } from "../middlewares/team.middleware.js";
 import { validateID } from "../middlewares/common.middleware.js";
 
@@ -13,6 +13,8 @@ router.post('/', validateTeamCreation, createTeam)
 router.post('/:teamId/pokemon/:pokemonId', addPokemonToTeam)
 
 router.delete('/:teamId/pokemon/:pokemonId', deletePokemonFromTeam)
+
+router.delete('/:id', validateID, deleteTeam)
 
 router.patch('/:id', validateID, validateTeamUpdate, updateTeam)
 
