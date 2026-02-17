@@ -74,3 +74,20 @@ export async function addPokemonToTeam(req, res){
     await team.addPokemon(pokemon);
     res.status(200).json(team);
 }
+
+export async function deletePokemonFromTeam(req, res){
+    const { teamId, pokemonId } = req.params;
+
+    const team = await Team.findByPk(teamId);
+    if (!team) {
+        return res.status(404).json({ error: 'Team not found' });
+    }
+
+    const pokemon = await Pokemon.findByPk(pokemonId);
+    if (!pokemon) {
+        return res.status(404).json({ error: 'Pokemon not found' });
+    }
+
+    await team.removePokemon(pokemon);
+    res.status(200).json(team);
+}

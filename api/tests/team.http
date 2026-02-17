@@ -33,3 +33,8 @@ Content-Type: application/json
 ### Add a pokemon to a new team 
 POST {{baseUrl}}/team/5/pokemon/25
 Content-Type: application/json
+
+
+### delete one pokemon from a team ( example pokemon avec  id 25 de la team 5) 
+DELETE  {{baseUrl}}/team/5/pokemon/25
+Content-Type: application/json
