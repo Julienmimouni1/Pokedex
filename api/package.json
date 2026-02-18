@@ -16,9 +16,11 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "argon2": "^0.44.0",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "joi": "^18.0.2",
+    "jsonwebtoken": "^9.0.3",
     "pg": "^8.18.0",
     "sequelize": "^6.37.7"
   }
