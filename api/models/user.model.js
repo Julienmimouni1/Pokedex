@@ -11,7 +11,7 @@ User.init ({
     },
     password : {
         type : DataTypes.TEXT, //TEXT = illimité 
-        allowNull : False 
+        allowNull : false 
     }, 
 
     // Pour l'instant je n'ai pas gérer les rôles. 

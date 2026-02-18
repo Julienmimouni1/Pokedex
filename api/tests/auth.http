@@ -1,0 +1,29 @@
+@baseUrl = http://localhost:3000
+
+### test user creation 
+
+POST {{baseUrl}}/api/auth/signup
+Content-Type: application/json
+
+{
+"username": "SachaKetchum",
+"password": "Password123",
+"confirm": "Password123"
+}
+
+
+### test user login
+
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+"username": "SachaKetchum",
+"password": "Password123"
+}
+
+### Token vérification 
+
+GET {{baseUrl}}/api/auth/me
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiU2FjaGFLZXRjaHVtIiwiaWF0IjoxNzcxNDE3NTI0LCJleHAiOjE3NzE1MDM5MjR9.V0-YEaxiLYrBUrd2d4jKWXvKYLp-JmEzsuYnho4RuQU

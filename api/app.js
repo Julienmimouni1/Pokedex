@@ -4,6 +4,7 @@ import PokemonRoutes from "./routes/pokemon.routes.js";
 import TeamRoutes from "./routes/team.routes.js"; 
 import TypeRoutes from "./routes/type.route.js"; 
 import { sequelize } from "./models/index.js";
+import authRouter from "./routes/auth.routes.js"; 
 
 
 const app = express(); 
@@ -18,6 +19,7 @@ console.log("Base de données synchronisée");
 app.use('/pokemon', PokemonRoutes); 
 app.use ('/team', TeamRoutes); 
 app.use('/type', TypeRoutes)
+app.use('/api/auth', authRouter); 
 
 app.listen(port, () => {
     console.log(`L'application tourne sur le port : http://localhost:${port}`);
