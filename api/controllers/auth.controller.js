@@ -74,9 +74,17 @@ export async function registerUser(req, res){
         process.env.JWT_SECRET || "secret_temporaire", // signature (fallback si .env manquant)
         {expiresIn: "24h"}
     ); 
-    // on renvoie le token ainsi que le user 
+
+    // On stocke le token dans un cookie HttpOnly sécurisé
+    res.cookie("token", token, {
+        httpOnly: true, // Inaccessible via JavaScript côté client (protection XSS)
+        secure: process.env.NODE_ENV === "production", // Envoi uniquement via HTTPS en prod
+        sameSite: "strict", // Protection contre les CSRF
+        maxAge: 24 * 60 * 60 * 1000 // 24h
+    });
+
+    // on renvoie le user (sans le token dans le body)
     res.json({
-      token,
       message : "Connexion réussie", 
       user: {
         id: user.id,
