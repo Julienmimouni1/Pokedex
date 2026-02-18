@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from "express"; 
 import PokemonRoutes from "./routes/pokemon.routes.js"; 
 import TeamRoutes from "./routes/team.routes.js"; 
+import TypeRoutes from "./routes/type.route.js"; 
 import { sequelize } from "./models/index.js";
 
 
@@ -16,6 +17,7 @@ console.log("Base de données synchronisée");
 
 app.use('/pokemon', PokemonRoutes); 
 app.use ('/team', TeamRoutes); 
+app.use('/type', TypeRoutes)
 
 app.listen(port, () => {
     console.log(`L'application tourne sur le port : http://localhost:${port}`);

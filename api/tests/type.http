@@ -1,0 +1,10 @@
+@baseUrl = http://localhost:3000
+
+### get all type
+
+GET {{baseUrl}}/type
+
+
+### get pokemon by type 
+
+GET {{baseUrl}}/type/1

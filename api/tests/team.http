@@ -39,6 +39,6 @@ Content-Type: application/json
 DELETE  {{baseUrl}}/team/5/pokemon/25
 Content-Type: application/json
 
-### delete a team ( exemple la team 5 )
+### delete a team ( exemple la team 6 )
 DELETE  {{baseUrl}}/team/6
 Content-Type: application/json
