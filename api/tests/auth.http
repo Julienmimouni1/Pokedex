@@ -27,3 +27,13 @@ Content-Type: application/json
 GET {{baseUrl}}/api/auth/me
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiU2FjaGFLZXRjaHVtIiwiaWF0IjoxNzcxNDE3NTI0LCJleHAiOjE3NzE1MDM5MjR9.V0-YEaxiLYrBUrd2d4jKWXvKYLp-JmEzsuYnho4RuQU
+
+### test protection team creation 
+
+POST {{baseUrl}}/team
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiU2FjaGFLZXRjaHVtIiwiaWF0IjoxNzcxNDE3NTI0LCJleHAiOjE3NzE1MDM5MjR9.V0-YEaxiLYrBUrd2d4jKWXvKYLp-JmEzsuYnho4RuQU
+
+{
+"name": "Team Rasta Rocket"
+}
