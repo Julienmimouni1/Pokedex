@@ -11,6 +11,12 @@
   );
 
   onMount(async () => {
+      // Vérifier si l'utilisateur est déjà connecté (cookie de session)
+      const authRes = await fetch('/api/auth/me', { credentials: 'include' });
+      if (authRes.ok) {
+        user = await authRes.json();
+      }
+
       const response = await fetch('/pokemon');
       pokemons = await response.json();
     }
@@ -78,8 +84,9 @@ let isLogin = true; // Bascule entre Connexion et Inscription
     const data = await response.json();
 
     if (response.ok) {
-      message = "Inscription réussie ! Connectez-vous.";
-      isLogin = true; // Retour à la connexion
+      user = data.user; // On connecte l'utilisateur directement
+      message = "";
+      showModal = false; // On ferme la modale
       password = "";
       confirmPassword = "";
     } else {

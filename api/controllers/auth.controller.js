@@ -30,12 +30,26 @@ export async function registerUser(req, res){
         username: username, 
         password : hashedPassword // on enregistre le mdp haché dans la BDD
        }); 
+
+       // --- AJOUT : Génération du token pour connexion automatique ---
+       const token = jwt.sign(
+        {userId : createdUser.id, username : createdUser.username,},
+        process.env.JWT_SECRET || "secret_temporaire",
+        {expiresIn: "24h"}
+       );
+
+       res.cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 24 * 60 * 60 * 1000
+       });
+       // -------------------------------------------------------------
+
        // On renvoit la confirmation de création de compte au client ( sans renvoyer le mdp)
        res.status(httpStatusCodes.CREATED).json({
-        id : createdUser.id, 
-        username : createdUser.username, 
-        created_at : createdUser.created_at, 
-        updated_at : createdUser.updated_at
+        message: "Inscription réussie",
+        user: { id: createdUser.id, username: createdUser.username }
        }); 
 
        } 
@@ -79,7 +93,7 @@ export async function registerUser(req, res){
     res.cookie("token", token, {
         httpOnly: true, // Inaccessible via JavaScript côté client (protection XSS)
         secure: process.env.NODE_ENV === "production", // Envoi uniquement via HTTPS en prod
-        sameSite: "strict", // Protection contre les CSRF
+        sameSite: "lax", // Protection contre les CSRF
         maxAge: 24 * 60 * 60 * 1000 // 24h
     });
 
