@@ -168,6 +168,7 @@ let isLogin = true; // Bascule entre Connexion et Inscription
         on:focus={() => showView('pokemon')}
         class="search-bar"
       />
+      <button on:click={() => showView('pokemon')}>Pokémons</button>
       <button on:click={() => showView('types')}>Types</button>
       <button on:click={() => showView('teams')}>Equipes</button>
     </div>
