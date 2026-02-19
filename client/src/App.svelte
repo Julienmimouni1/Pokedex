@@ -5,6 +5,11 @@
   let teams = [];
   let currentView = 'pokemon'; // 'pokemon', 'types', 'teams'
   let searchTerm = "";
+  let pokemonSearchTerm = ""; // Recherche spécifique pour la modale d'ajout
+
+  $: filteredPokemonsForModal = pokemons.filter(pokemon => 
+    pokemon.name.toLowerCase().includes(pokemonSearchTerm.toLowerCase())
+  );
 
   $: filteredPokemons = pokemons.filter(pokemon => 
     pokemon.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -40,6 +45,8 @@
 let isLogin = true; // Bascule entre Connexion et Inscription
   let isCreateTeam = false; // Pour savoir si on est en mode "Création d'équipe"
   let showModal = false;
+  let showAddPokemonModal = false;
+  let currentTeamIdToAdd = null;
   let username = "";
   let password = "";
   let confirmPassword = "";
@@ -119,6 +126,35 @@ let isLogin = true; // Bascule entre Connexion et Inscription
     await fetch(`/team/${id}`, { method: "DELETE" });
     showView('teams'); // On rafraîchit la liste
   }
+
+  const typeColors = {
+    normal: '#A8A77A', feu: '#EE8130', fire: '#EE8130', eau: '#6390F0', water: '#6390F0',
+    plante: '#7AC74C', grass: '#7AC74C', electrik: '#F7D02C', electric: '#F7D02C',
+    glace: '#96D9D6', ice: '#96D9D6', combat: '#C22E28', fighting: '#C22E28',
+    poison: '#A33EA1', sol: '#E2BF65', ground: '#E2BF65', vol: '#A98FF3', flying: '#A98FF3',
+    psy: '#F95587', psychic: '#F95587', insecte: '#A6B91A', bug: '#A6B91A',
+    roche: '#B6A136', rock: '#B6A136', spectre: '#735797', ghost: '#735797',
+    dragon: '#6F35FC', acier: '#B7B7CE', steel: '#B7B7CE', fee: '#D685AD', fairy: '#D685AD'
+  };
+
+  function openAddPokemonModal(teamId) {
+    currentTeamIdToAdd = teamId;
+    pokemonSearchTerm = "";
+    showAddPokemonModal = true;
+  }
+
+  async function handleAddPokemonToTeam(pokemonId) {
+    const response = await fetch(`/team/${currentTeamIdToAdd}/pokemon/${pokemonId}`, {
+      method: 'POST'
+    });
+    
+    if (response.ok) {
+      showAddPokemonModal = false;
+      showView('teams'); // On rafraîchit la liste pour voir le nouveau Pokémon
+    } else {
+      alert("Erreur lors de l'ajout du Pokémon");
+    }
+  }
 </script>
 
 <main>
@@ -166,8 +202,8 @@ let isLogin = true; // Bascule entre Connexion et Inscription
   {:else if currentView === 'types'}
     <div class="pokemon-grid">
       {#each types as type}
-        <div class="card">
-          <h3>{type.name}</h3>
+        <div class="type-card" style="background-color: {typeColors[type.name.toLowerCase()] || '#777'};">
+          <span class="type-name">{type.name}</span>
         </div>
       {/each}
     </div>
@@ -180,15 +216,33 @@ let isLogin = true; // Bascule entre Connexion et Inscription
         </button>
       </div>
     {/if}
-    <div class="pokemon-grid" style="grid-template-columns: repeat(3, 1fr);">
+    <div class="teams-grid">
       {#each teams as team}
-        <div class="card">
-          <h3>{team.name}</h3>
-          <p>{team.description || 'Aucune description'}</p>
-          <small>Pokémons : {team.pokemons ? team.pokemons.length : 0}</small>
-          {#if user}
-            <button class="btn-delete" on:click={() => handleDeleteTeam(team.id)}>Supprimer</button>
-          {/if}
+        <div class="team-card">
+          <div class="card-header">
+            <h3>{team.name}</h3>
+            <p class="description">{team.description || 'Pas de description'}</p>
+            {#if user}
+              <button class="btn-delete-small" on:click={() => handleDeleteTeam(team.id)}>Supprimer</button>
+            {/if}
+          </div>
+          <div class="roster">
+            {#if team.pokemons && team.pokemons.length > 0}
+              {#each team.pokemons as pokemon}
+                <div class="pokemon-slot" title={pokemon.name}>
+                  <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`} alt={pokemon.name} />
+                  <span class="pokemon-name">{pokemon.name}</span>
+                </div>
+              {/each}
+            {/if}
+            {#if user}
+              <button class="add-pokemon-slot" on:click={() => openAddPokemonModal(team.id)} title="Ajouter un Pokémon">
+                <span>+</span>
+              </button>
+            {:else if !team.pokemons || team.pokemons.length === 0}
+              <div class="empty-roster">Aucun Pokémon</div>
+            {/if}
+          </div>
         </div>
       {/each}
     </div>
@@ -237,6 +291,24 @@ let isLogin = true; // Bascule entre Connexion et Inscription
           </button>
         {/if}
         {#if message} <p class="message">{message}</p> {/if}
+      </div>
+    </div>
+  {/if}
+
+  {#if showAddPokemonModal}
+    <div class="modal-backdrop" on:click={() => showAddPokemonModal = false}>
+      <div class="modal pc-box" on:click|stopPropagation>
+        <h2>Choisir un Pokémon</h2>
+        <input type="text" placeholder="Rechercher un Pokémon..." bind:value={pokemonSearchTerm} class="search-bar" />
+        <div class="pc-grid">
+          {#each filteredPokemonsForModal as pokemon}
+            <div class="pc-slot" on:click={() => handleAddPokemonToTeam(pokemon.id)}>
+              <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`} alt={pokemon.name} />
+              <span class="pc-name">{pokemon.name}</span>
+            </div>
+          {/each}
+        </div>
+        <button class="btn-close" on:click={() => showAddPokemonModal = false}>Annuler</button>
       </div>
     </div>
   {/if}
@@ -349,6 +421,16 @@ let isLogin = true; // Bascule entre Connexion et Inscription
     width: 100%;
   }
 
+  .btn-delete-small {
+    background-color: #cc0000;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.7rem;
+    margin-top: 5px;
+  }
+
   .actions {
     text-align: center;
     margin: 20px 0;
@@ -356,8 +438,8 @@ let isLogin = true; // Bascule entre Connexion et Inscription
 
   .pokemon-grid {
     display: grid;
-    grid-template-columns: repeat(8, 1fr); /* Force 8 colonnes */
-    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Grille responsive */
+    gap: 20px;
     padding: 20px;
   }
 
@@ -414,4 +496,150 @@ let isLogin = true; // Bascule entre Connexion et Inscription
     color: green;
     font-size: 0.9rem;
   }
+
+  /* Styles pour les Types */
+  .type-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    border-radius: 15px;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    transition: transform 0.2s;
+  }
+  .type-card:hover {
+    transform: scale(1.05);
+  }
+
+  /* Styles pour les Équipes */
+  .teams-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .team-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+    border: 1px solid #e0e0e0;
+    transition: transform 0.2s;
+  }
+
+  .team-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .card-header {
+    background-color: #ffcb05;
+    color: #3b4cca;
+    padding: 15px;
+    border-bottom: 4px solid #3b4cca;
+  }
+
+  .card-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+
+  .roster {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 15px;
+    gap: 10px;
+    background-color: #f9f9f9;
+    min-height: 100px;
+  }
+
+  .pokemon-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 60px;
+  }
+
+  .pokemon-slot img {
+    width: 50px;
+    height: 50px;
+    image-rendering: pixelated;
+  }
+  
+  .pokemon-name {
+    font-size: 0.6rem;
+    text-transform: capitalize;
+    color: #333;
+  }
+  
+  .empty-roster {
+    color: #999;
+    font-style: italic;
+    align-self: center;
+  }
+
+  /* Bouton Ajouter Pokémon (+) */
+  .add-pokemon-slot {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px dashed #ccc;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: #ccc;
+    font-size: 2rem;
+    padding: 0;
+    box-shadow: none;
+    transition: all 0.2s;
+  }
+
+  .add-pokemon-slot:hover {
+    border-color: #3b4cca;
+    color: #3b4cca;
+    background-color: rgba(59, 76, 202, 0.1);
+    transform: scale(1.1);
+  }
+
+  /* Style PC Box pour la modale */
+  .pc-box {
+    max-width: 800px;
+    width: 90%;
+    max-height: 80vh;
+    background-color: #f0f0f0;
+    border: 4px solid #555;
+  }
+
+  .pc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 10px;
+    overflow-y: auto;
+    max-height: 50vh;
+    padding: 10px;
+    background-color: white;
+    border: 2px inset #ccc;
+    margin-top: 10px;
+  }
+
+  .pc-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 5px;
+  }
+  .pc-slot:hover { background-color: #e0e0e0; }
+  .pc-slot img { width: 60px; height: 60px; }
+  .pc-name { font-size: 0.7rem; text-transform: capitalize; }
+  .btn-close { background-color: #777; color: white; margin-top: 10px; }
 </style>

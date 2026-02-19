@@ -29,6 +29,10 @@ Pokemon.init({
     type : DataTypes.INTEGER, // On pourait mettre max 100 
     allowNull : false, 
   },
+  speed: { 
+    type : DataTypes.INTEGER, // On pourait mettre max 100
+     
+  },
   }, {
     sequelize,  
     tableName : "pokemon"
