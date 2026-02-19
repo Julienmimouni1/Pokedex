@@ -65,7 +65,7 @@ let isLogin = true; // Bascule entre Connexion et Inscription
 
 <main>
   <header>
-    <h1>POKEDEX</h1>
+    <h1 class="logo">POKÉDEX</h1>
     <div class="nav-buttons">
       <button>Pokemon</button>
       <button>Types</button>
@@ -74,10 +74,10 @@ let isLogin = true; // Bascule entre Connexion et Inscription
     <div class="buttons">
       {#if user}
         <span>Bienvenue {user.username}</span>
-        <button on:click={() => user = null}>Déconnexion</button>
+        <button class="btn-logout" on:click={() => user = null}>Déconnexion</button>
       {:else}
-        <button on:click={() => { isLogin = true; showModal = true; message = ""; }}>Connexion</button>
-        <button on:click={() => { isLogin = false; showModal = true; message = ""; }}>Inscription</button>
+        <button class="btn-login" on:click={() => { isLogin = true; showModal = true; message = ""; }}>Connexion</button>
+        <button class="btn-signup" on:click={() => { isLogin = false; showModal = true; message = ""; }}>Inscription</button>
       {/if}
     </div>
   </header>
@@ -131,7 +131,7 @@ let isLogin = true; // Bascule entre Connexion et Inscription
         {#if !isLogin}
           <input type="password" placeholder="Confirmer le mot de passe" bind:value={confirm} />
         {/if}
-        <button on:click={isLogin ? handleLogin : handleSignup}>
+        <button class="btn-submit" on:click={isLogin ? handleLogin : handleSignup}>
           {isLogin ? "Se connecter" : "S'inscrire"}
         </button>
         {#if message} <p class="message">{message}</p> {/if}
@@ -151,18 +151,81 @@ let isLogin = true; // Bascule entre Connexion et Inscription
     justify-content: space-between; /* Espace max entre le titre et les boutons */
     align-items: center; /* Centrage vertical */
     padding: 20px;
-    background-color: #f0f0f0;
-    border-bottom: 1px solid #ccc;
+    background-color: #ff3e3e; /* Rouge Pokédex */
+    border-bottom: 4px solid #222; /* Ligne noire style cartoon */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    color: white;
+  }
+
+  .logo {
+    margin: 0;
+    font-family: 'Arial Black', sans-serif;
+    font-size: 2rem;
+    color: #ffcb05; /* Jaune Pokémon */
+    text-shadow: 3px 3px 0 #2a75bb; /* Ombre Bleue */
+    letter-spacing: 2px;
+    -webkit-text-stroke: 1px #2a75bb;
   }
 
   .nav-buttons {
     display: flex;
-    gap: 10px;
+    gap: 15px;
   }
 
   .buttons {
     display: flex;
+    align-items: center;
     gap: 10px; /* Espace entre les boutons */
+    font-weight: bold;
+  }
+
+  /* Style général des boutons "Physiques" */
+  button {
+    border: none;
+    border-radius: 25px; /* Arrondi */
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.1s;
+    text-transform: uppercase;
+    font-family: sans-serif;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.2); /* Effet 3D */
+    position: relative;
+    top: 0;
+  }
+
+  button:active {
+    top: 4px; /* Le bouton s'enfonce */
+    box-shadow: none;
+  }
+
+  /* Boutons de navigation (Blanc) */
+  .nav-buttons button {
+    background-color: white;
+    color: #333;
+  }
+  .nav-buttons button:hover {
+    background-color: #f2f2f2;
+  }
+
+  /* Boutons d'action (Bleu) */
+  .btn-login, .btn-signup, .btn-submit {
+    background-color: #3b4cca;
+    color: white;
+  }
+  .btn-login:hover, .btn-signup:hover, .btn-submit:hover {
+    background-color: #2a3b9e;
+  }
+
+  /* Bouton Déconnexion (Rouge foncé) */
+  .btn-logout {
+    background-color: #cc0000;
+    color: white;
+    border: 1px solid white;
+  }
+  .btn-logout:hover {
+    background-color: #a30000;
   }
 
   .pokemon-grid {
