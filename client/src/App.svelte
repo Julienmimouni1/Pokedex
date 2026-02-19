@@ -86,6 +86,7 @@ let isLogin = true; // Bascule entre Connexion et Inscription
     {#each pokemons as pokemon}
       <div class="card">
         <h3>#{pokemon.id} <br> {pokemon.name}</h3>
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/{pokemon.id}.png" alt={pokemon.name} />
         <div class="stats">
           <p>PV: {pokemon.hp}</p>
           <p>Atk: {pokemon.atk}</p>
@@ -178,6 +179,12 @@ let isLogin = true; // Bascule entre Connexion et Inscription
     text-align: center;
     background-color: white;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .card img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
   }
 
   .stats p {
