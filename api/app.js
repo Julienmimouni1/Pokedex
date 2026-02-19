@@ -8,6 +8,7 @@ import authRouter from "./routes/auth.routes.js";
 import swaggerUi from "swagger-ui-express";
 import { specs } from "./swagger.js";
 import { xss } from 'express-xss-sanitizer';
+import cors from 'cors'; 
 
 
 const app = express(); 
@@ -16,6 +17,7 @@ const port = process.env.PORT || 3001
 
 app.use(express.json()); 
 app.use(xss()); 
+app.use(cors()); 
 
 await sequelize.sync({ alter: true });
 console.log("Base de données synchronisée");
