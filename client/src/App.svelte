@@ -1,19 +1,44 @@
 <script>
   import { onMount } from 'svelte';
   let pokemons = [];
+  let types = [];
+  let teams = [];
+  let currentView = 'pokemon'; // 'pokemon', 'types', 'teams'
+  let searchTerm = "";
+
+  $: filteredPokemons = pokemons.filter(pokemon => 
+    pokemon.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   onMount(async () => {
-      const response = await fetch('http://localhost:3000/pokemon');
+      const response = await fetch('/pokemon');
       pokemons = await response.json();
-     
     }
 );
 
+  async function showView(view) {
+    currentView = view;
+    
+    if (view === 'types' && types.length === 0) {
+      const res = await fetch('/type');
+      types = await res.json();
+    }
+    
+    if (view === 'teams') {
+      // On recharge les équipes à chaque fois pour voir les changements (création/suppression)
+      const res = await fetch('/team');
+      teams = await res.json();
+    }
+  }
+
 let isLogin = true; // Bascule entre Connexion et Inscription
+  let isCreateTeam = false; // Pour savoir si on est en mode "Création d'équipe"
   let showModal = false;
   let username = "";
   let password = "";
-  let confirm = "";
+  let confirmPassword = "";
+  let teamName = "";
+  let teamDescription = "";
   let user = null;
   let message = "";
 
@@ -39,7 +64,7 @@ let isLogin = true; // Bascule entre Connexion et Inscription
 
   // Gestion de l'inscription
   async function handleSignup() {
-    if (password !== confirm) {
+    if (password !== confirmPassword) {
       message = "Les mots de passe ne correspondent pas";
       return;
     }
@@ -47,7 +72,7 @@ let isLogin = true; // Bascule entre Connexion et Inscription
     const response = await fetch("/api/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password, confirm }),
+      body: JSON.stringify({ username, password, confirm: confirmPassword }),
     });
 
     const data = await response.json();
@@ -56,10 +81,36 @@ let isLogin = true; // Bascule entre Connexion et Inscription
       message = "Inscription réussie ! Connectez-vous.";
       isLogin = true; // Retour à la connexion
       password = "";
-      confirm = "";
+      confirmPassword = "";
     } else {
       message = data.message || data.error || "Erreur d'inscription";
     }
+  }
+
+  // Création d'une équipe
+  async function handleCreateTeam() {
+    const response = await fetch("/team", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: teamName, description: teamDescription }),
+    });
+
+    if (response.ok) {
+      showModal = false;
+      teamName = "";
+      teamDescription = "";
+      showView('teams'); // On rafraîchit la liste
+    } else {
+      message = "Erreur lors de la création de l'équipe";
+    }
+  }
+
+  // Suppression d'une équipe
+  async function handleDeleteTeam(id) {
+    if (!confirm("Voulez-vous vraiment supprimer cette équipe ?")) return;
+    
+    await fetch(`/team/${id}`, { method: "DELETE" });
+    showView('teams'); // On rafraîchit la liste
   }
 </script>
 
@@ -67,23 +118,30 @@ let isLogin = true; // Bascule entre Connexion et Inscription
   <header>
     <h1 class="logo">POKÉDEX</h1>
     <div class="nav-buttons">
-      <button>Pokemon</button>
-      <button>Types</button>
-      <button>Equipes</button>
+      <input 
+        type="text" 
+        placeholder="Rechercher..." 
+        bind:value={searchTerm} 
+        on:focus={() => showView('pokemon')}
+        class="search-bar"
+      />
+      <button on:click={() => showView('types')}>Types</button>
+      <button on:click={() => showView('teams')}>Equipes</button>
     </div>
     <div class="buttons">
       {#if user}
         <span>Bienvenue {user.username}</span>
         <button class="btn-logout" on:click={() => user = null}>Déconnexion</button>
       {:else}
-        <button class="btn-login" on:click={() => { isLogin = true; showModal = true; message = ""; }}>Connexion</button>
-        <button class="btn-signup" on:click={() => { isLogin = false; showModal = true; message = ""; }}>Inscription</button>
+        <button class="btn-login" on:click={() => { isLogin = true; isCreateTeam = false; showModal = true; message = ""; }}>Connexion</button>
+        <button class="btn-signup" on:click={() => { isLogin = false; isCreateTeam = false; showModal = true; message = ""; }}>Inscription</button>
       {/if}
     </div>
   </header>
 
+  {#if currentView === 'pokemon'}
   <div class="pokemon-grid">
-    {#each pokemons as pokemon}
+    {#each filteredPokemons as pokemon}
       <div class="card">
         <h3>#{pokemon.id} <br> {pokemon.name}</h3>
         <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/{pokemon.id}.png" alt={pokemon.name} />
@@ -98,6 +156,36 @@ let isLogin = true; // Bascule entre Connexion et Inscription
       </div>
     {/each}
   </div>
+  {:else if currentView === 'types'}
+    <div class="pokemon-grid">
+      {#each types as type}
+        <div class="card">
+          <h3>{type.name}</h3>
+        </div>
+      {/each}
+    </div>
+  {:else if currentView === 'teams'}
+    <!-- On change un peu la grille pour les équipes car elles prennent plus de place -->
+    {#if user}
+      <div class="actions">
+        <button class="btn-submit" on:click={() => { isCreateTeam = true; showModal = true; message = ""; }}>
+          + Créer une équipe
+        </button>
+      </div>
+    {/if}
+    <div class="pokemon-grid" style="grid-template-columns: repeat(3, 1fr);">
+      {#each teams as team}
+        <div class="card">
+          <h3>{team.name}</h3>
+          <p>{team.description || 'Aucune description'}</p>
+          <small>Pokémons : {team.pokemons ? team.pokemons.length : 0}</small>
+          {#if user}
+            <button class="btn-delete" on:click={() => handleDeleteTeam(team.id)}>Supprimer</button>
+          {/if}
+        </div>
+      {/each}
+    </div>
+  {/if}
 
   {#if showModal}
     <div
@@ -125,15 +213,22 @@ let isLogin = true; // Bascule entre Connexion et Inscription
           }
         }}
       >
-        <h2>{isLogin ? "Connexion" : "Inscription"}</h2>
-        <input type="text" placeholder="Pseudo" bind:value={username} />
-        <input type="password" placeholder="Mot de passe" bind:value={password} />
-        {#if !isLogin}
-          <input type="password" placeholder="Confirmer le mot de passe" bind:value={confirm} />
+        {#if isCreateTeam}
+          <h2>Créer une équipe</h2>
+          <input type="text" placeholder="Nom de l'équipe" bind:value={teamName} />
+          <input type="text" placeholder="Description" bind:value={teamDescription} />
+          <button class="btn-submit" on:click={handleCreateTeam}>Créer</button>
+        {:else}
+          <h2>{isLogin ? "Connexion" : "Inscription"}</h2>
+          <input type="text" placeholder="Pseudo" bind:value={username} />
+          <input type="password" placeholder="Mot de passe" bind:value={password} />
+          {#if !isLogin}
+            <input type="password" placeholder="Confirmer le mot de passe" bind:value={confirmPassword} />
+          {/if}
+          <button class="btn-submit" on:click={isLogin ? handleLogin : handleSignup}>
+            {isLogin ? "Se connecter" : "S'inscrire"}
+          </button>
         {/if}
-        <button class="btn-submit" on:click={isLogin ? handleLogin : handleSignup}>
-          {isLogin ? "Se connecter" : "S'inscrire"}
-        </button>
         {#if message} <p class="message">{message}</p> {/if}
       </div>
     </div>
@@ -209,6 +304,15 @@ let isLogin = true; // Bascule entre Connexion et Inscription
     background-color: #f2f2f2;
   }
 
+  .search-bar {
+    padding: 10px 15px;
+    border-radius: 25px;
+    border: none;
+    font-size: 0.9rem;
+    outline: none;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+  }
+
   /* Boutons d'action (Bleu) */
   .btn-login, .btn-signup, .btn-submit {
     background-color: #3b4cca;
@@ -226,6 +330,21 @@ let isLogin = true; // Bascule entre Connexion et Inscription
   }
   .btn-logout:hover {
     background-color: #a30000;
+  }
+
+  .btn-delete {
+    background-color: #cc0000;
+    color: white;
+    margin-top: 10px;
+    font-size: 0.8rem;
+    padding: 5px 10px;
+    display: block;
+    width: 100%;
+  }
+
+  .actions {
+    text-align: center;
+    margin: 20px 0;
   }
 
   .pokemon-grid {
