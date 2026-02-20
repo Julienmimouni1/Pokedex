@@ -1,0 +1,16 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Installation des outils nécessaires pour compiler argon2 (python3, make, g++)
+RUN apk add --no-cache build-base python3
+
+COPY package.json package-lock.json ./
+
+RUN npm i --omit=dev
+
+COPY . .
+
+EXPOSE 3000
+
+CMD ["node", "app.js"]

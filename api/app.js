@@ -21,8 +21,23 @@ app.use(xss());
 app.use(cors()); 
 app.use(cookieParser());
 
-await sequelize.sync({ alter: true });
-console.log("Base de données synchronisée");
+// Fonction de connexion avec tentatives multiples (Retry Pattern)
+const connectWithRetry = async () => {
+    const maxRetries = 5;
+    for (let i = 0; i < maxRetries; i++) {
+        try {
+            await sequelize.sync({ alter: true });
+            console.log("Base de données synchronisée");
+            return; // Sortie de la fonction si succès
+        } catch (err) {
+            console.log(`Tentative de connexion échouée (${i + 1}/${maxRetries})... Nouvelle tentative dans 5s.`);
+            await new Promise(res => setTimeout(res, 5000)); // Attendre 5 secondes
+        }
+    }
+    console.error("Impossible de se connecter à la BDD après plusieurs tentatives.");
+};
+
+await connectWithRetry();
 
 app.use('/pokemon', PokemonRoutes); 
 app.use ('/team', TeamRoutes); 
