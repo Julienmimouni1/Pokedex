@@ -3,8 +3,8 @@ services:
     image: postgres:15-alpine
     environment:
       POSTGRES_USER: admin_pokedex
-      POSTGRES_PASSWORD: pokedex
-      POSTGRES_DB: pokedex
+      POSTGRES_PASSWORD: 
+      POSTGRES_DB: 
     volumes:
       - db_data:/var/lib/postgresql/data
     ports:
@@ -19,9 +19,9 @@ services:
       - "3002:3000"
     environment:
       - PORT=3000
-      - PG_URL=postgres://admin_pokedex:pokedex@db:5432/pokedex
-      - JWT_SECRET=secret_temporaire
-      - NODE_ENV=development
+      - PG_URL=
+      - JWT_SECRET=
+      - NODE_ENV=d
     depends_on:
       - db
 
@@ -32,8 +32,8 @@ services:
     ports:
       - "5174:5173"
     environment:
-      - VITE_API_URL=http://api:3000
-      - VITE_API_URL=http://localhost:3000
+      - VITE_API_URL=
+      - VITE_API_URL=
     depends_on:
       - api
     command: npm run dev -- --host
