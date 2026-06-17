@@ -47,6 +47,4 @@ app.use('/api/auth', authRouter);
 // Route pour la documentation Swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
-app.listen(port, () => {
-    console.log(`L'application tourne sur le port : http://localhost:${port}`);
-});
+export default app ; 
