@@ -20,7 +20,7 @@ export function validateTeamUpdate(req, res, next){
 
     const validation = updateTeamSchema.validate(req.body);
     if (validation.error) {
-        return res.status(400).json(error);
+        return res.status(400).json(validation.error);
     }
     next();
 }

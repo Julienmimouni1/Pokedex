@@ -18,7 +18,7 @@ export default [
       }
     },
     rules: {
-      'no-unused-vars': 'warn',   // warning seulement, pas bloquant
+      'no-unused-vars': 'off',   // Désactive la règle "no-unused-vars" pour permettre les variables non utilisées dans le code.
       'no-undef': 'error'
     }
   },
